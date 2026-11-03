@@ -6,6 +6,10 @@ public static void main(String[] args) {
     frame.setSize(800, 600);
     frame.setResizable(false);
     frame.setLocationRelativeTo(null);
+    GamePanel gamePanel = new GamePanel();
+    frame.add(gamePanel);
+    frame.pack();
     frame.setVisible(true);
+    gamePanel.startGameThread();
 }
 
