@@ -1,0 +1,13 @@
+TO DO LIST
+1. Spells and projectile system
+    - New spell class with custom .update() method
+    - ArrayList of active spells in GamePanel (loop through it backwards to calculate update trajectories)
+    - Math for arcing projectiles. Use Math.atan2(dY, dX) with difference in mouse x and y - player X and Y positions to calculate angle angle between center of player and cursor
+2. Better platform generation
+3. Player health
+    - Tracking options:
+        - a bar
+        - coloring the rectangle for now
+        - hearts above/below the player
+4. Enemies
+    - Basic AI and spawning
