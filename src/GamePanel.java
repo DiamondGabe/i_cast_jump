@@ -5,6 +5,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
+
+import Magic.Spell;
+
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
@@ -17,6 +20,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int screenWidth = 800;
     public final int screenHeight = 600;
     KeyHandler keyHandler = new KeyHandler();
+    MouseHandler mouseHandler = new MouseHandler();
     private int fps = 90;
     private long drawInterval = 1000000000 / fps;
     private int playerX = 100;
@@ -27,6 +31,7 @@ public class GamePanel extends JPanel implements Runnable {
     private double velocityY = 0;
     private double gravity = 0.4;
     ArrayList<Platform> activePlatforms = new ArrayList<>();
+    ArrayList<Spell> activeSpells = new ArrayList<>();
 
 
     public GamePanel() {
@@ -35,6 +40,8 @@ public class GamePanel extends JPanel implements Runnable {
         setDoubleBuffered(true);
         setFocusable(true);
         this.addKeyListener(keyHandler);
+        this.addMouseListener(mouseHandler);
+        this.addMouseMotionListener(mouseHandler);
         addPlatforms();
         //activePlatforms.add(new Platform(200, 450, 100, 20));
         //activePlatforms.add(new Platform(500, 420, 100, 20));
@@ -117,7 +124,30 @@ public class GamePanel extends JPanel implements Runnable {
                 activePlatforms.clear();
                 addPlatforms();
             }
-            
+
+            // Mouse tracking
+            double playerCenterX = playerX + (playerWidth / 2.0);
+            double playerCenterY = playerY + (playerHeight / 2.0);
+            double dX = mouseHandler.mouseX - playerCenterX;
+            double dY = mouseHandler.mouseY - playerCenterY;
+            double angle = Math.atan2(dY, dX);
+
+            // Spell on click
+            if (mouseHandler.leftMousePressed == true) {
+                Spell spell = new Spell(playerX + playerWidth / 2, playerY + playerHeight / 2, 0, 0, 10, 10, angle);
+                activeSpells.add(spell);
+            }
+
+            // Spell updates
+            for (int i = activeSpells.size() - 1; i >= 0; i--) {
+                Spell spell = activeSpells.get(i);
+                spell.update();
+                // Remove spell if it goes off-screen
+                if (spell.posX < 0 || spell.posX > screenWidth || spell.posY < 0 || spell.posY > screenHeight) {
+                    activeSpells.remove(i);
+                }
+            }
+
             // X-Axis movement and screen bounds
             boolean isFarLeft = playerX <= 0;
             boolean isFarRight = playerX >= screenWidth - playerWidth;
@@ -216,6 +246,10 @@ public class GamePanel extends JPanel implements Runnable {
             g2.fillRect(playerX, playerY, playerWidth, playerHeight);
             for (int i = 0; i < activePlatforms.size(); i++) {
                 activePlatforms.get(i).draw(g2);
+            }
+            for (int i = activeSpells.size() - 1; i >= 0; i--) {
+                Spell spell = activeSpells.get(i);
+                spell.draw(g2);
             }
             break;
         }
