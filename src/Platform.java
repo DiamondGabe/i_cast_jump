@@ -36,7 +36,7 @@ public class Platform {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.green);
+        g.setColor(Color.gray);
         g.fillRect(x, y, width, height);
     }
     

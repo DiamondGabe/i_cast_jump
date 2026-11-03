@@ -5,6 +5,8 @@ public class KeyHandler implements KeyListener {
     public boolean downPressed;
     public boolean leftPressed;
     public boolean rightPressed;
+    public boolean shiftPressed;
+    public boolean spacePressed;
 
     @Override
     public void keyTyped(java.awt.event.KeyEvent e) {
@@ -21,6 +23,10 @@ public class KeyHandler implements KeyListener {
             leftPressed = true;
         } else if (e.getKeyCode() == java.awt.event.KeyEvent.VK_D) {
             rightPressed = true;
+        } else if (e.getKeyCode() == java.awt.event.KeyEvent.VK_SHIFT) {
+            shiftPressed = true;
+        } else if (e.getKeyCode() == java.awt.event.KeyEvent.VK_SPACE) {
+            spacePressed = true;
         }
     }
 
@@ -34,6 +40,10 @@ public class KeyHandler implements KeyListener {
             leftPressed = false;
         } else if (e.getKeyCode() == java.awt.event.KeyEvent.VK_D) {
             rightPressed = false;
+        } else if (e.getKeyCode() == java.awt.event.KeyEvent.VK_SHIFT) {
+            shiftPressed = false;
+        } else if (e.getKeyCode() == java.awt.event.KeyEvent.VK_SPACE) {
+            spacePressed = false;
         }
     }
 }
