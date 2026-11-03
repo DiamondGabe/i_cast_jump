@@ -35,13 +35,17 @@ public class GamePanel extends JPanel implements Runnable {
         setDoubleBuffered(true);
         setFocusable(true);
         this.addKeyListener(keyHandler);
-        for (int i = 0; i < screenHeight; i += playerHeight+30) {
-            int platformX = (int) (screenWidth * Math.random());
-            int platformXWidth = (int) (Math.random() * 800);
-            activePlatforms.add(new Platform(platformX, i, platformXWidth, 20));
-        }
+        addPlatforms();
         //activePlatforms.add(new Platform(200, 450, 100, 20));
         //activePlatforms.add(new Platform(500, 420, 100, 20));
+    }
+
+    public void addPlatforms() {
+        for (int i = 0; i < screenHeight; i += playerHeight+30) {
+                int platformX = (int) (screenWidth * Math.random());
+                int platformXWidth = (int) (Math.random() * 800);
+                activePlatforms.add(new Platform(platformX, i, platformXWidth, 20));
+            }
     }
 
     public void startGameThread() {
@@ -108,7 +112,12 @@ public class GamePanel extends JPanel implements Runnable {
             }
             break;
         case PLAY_STATE:
-
+            // Platform regeneration
+            if (keyHandler.gPressed == true) {
+                activePlatforms.clear();
+                addPlatforms();
+            }
+            
             // X-Axis movement and screen bounds
             boolean isFarLeft = playerX <= 0;
             boolean isFarRight = playerX >= screenWidth - playerWidth;
