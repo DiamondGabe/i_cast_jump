@@ -146,6 +146,9 @@ public class GamePanel extends JPanel implements Runnable {
                 if (spell.posX < 0 || spell.posX > screenWidth || spell.posY < 0 || spell.posY > screenHeight) {
                     activeSpells.remove(i);
                 }
+                if (getCollidingPlatform(new Rectangle(spell.posX, spell.posY, 10, 10)) != null) {
+                    activeSpells.remove(i);
+                }
             }
 
             // X-Axis movement and screen bounds

@@ -24,6 +24,12 @@ public class MouseHandler extends MouseAdapter {
     }
 
     @Override
+    public void mouseDragged(MouseEvent e) {
+        mouseX = e.getX();
+        mouseY = e.getY();
+    }
+
+    @Override
     public void mousePressed(MouseEvent e) {
         int button = e.getButton();
         if (button != MouseEvent.BUTTON1
