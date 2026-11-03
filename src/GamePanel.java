@@ -28,6 +28,8 @@ public class GamePanel extends JPanel implements Runnable {
     private int playerWidth = 32;
     private int playerHeight = 64;
     private int playerSpeed = 4;
+    public int maxHealth = 100;
+    public int currentHealth = maxHealth;
     private double velocityY = 0;
     private double gravity = 0.4;
     ArrayList<Platform> activePlatforms = new ArrayList<>();

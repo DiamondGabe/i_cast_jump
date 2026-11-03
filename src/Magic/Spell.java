@@ -26,7 +26,7 @@ public class Spell {
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.RED);
+        g.setColor(Color.PINK);
         g.fillOval(posX, posY, 10, 10);
     }
 
