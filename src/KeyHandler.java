@@ -7,6 +7,7 @@ public class KeyHandler implements KeyListener {
     public boolean rightPressed;
     public boolean shiftPressed;
     public boolean spacePressed;
+    public boolean escapePressed;
 
     @Override
     public void keyTyped(java.awt.event.KeyEvent e) {
@@ -27,6 +28,8 @@ public class KeyHandler implements KeyListener {
             shiftPressed = true;
         } else if (e.getKeyCode() == java.awt.event.KeyEvent.VK_SPACE) {
             spacePressed = true;
+        } else if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ESCAPE) {
+            escapePressed = true;
         }
     }
 
@@ -44,6 +47,8 @@ public class KeyHandler implements KeyListener {
             shiftPressed = false;
         } else if (e.getKeyCode() == java.awt.event.KeyEvent.VK_SPACE) {
             spacePressed = false;
+        } else if (e.getKeyCode() == java.awt.event.KeyEvent.VK_ESCAPE) {
+            escapePressed = false;
         }
     }
 }
