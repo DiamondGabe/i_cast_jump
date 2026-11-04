@@ -79,6 +79,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         while (gameThread != null) {
             currentTime = System.nanoTime();
+            drawInterval = 1000000000L / fps;
             delta += (currentTime - lastTime) / (double) drawInterval;
             lastTime = currentTime;
 
@@ -98,16 +99,16 @@ public class GamePanel extends JPanel implements Runnable {
         }
         switch(gameState) {
         case TITLE_STATE:
-            fps = 5;
+            fps = 15;
             if (keyHandler.upPressed == true) {
                 commandNum--;
                 if (commandNum < 0) {
-                    commandNum = 1;
+                    commandNum = 2;
                 }
             }
             if (keyHandler.downPressed == true) {
                 commandNum++;
-                if (commandNum > 1) {
+                if (commandNum > 2) {
                     commandNum = 0;
                 }
             }
@@ -115,7 +116,7 @@ public class GamePanel extends JPanel implements Runnable {
                 if (commandNum == 0) {
                     fps = 90;
                     gameState = PLAY_STATE;
-                } else if (commandNum == 1) {
+                } else if (commandNum == 2) {
                     System.exit(0);
                 }
             }
@@ -233,18 +234,14 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D g2 = (Graphics2D) g;
         switch(gameState) {
         case TITLE_STATE:
-            fps = 15;
             g2.setColor(Color.white);
             g2.setFont(new Font("Arial", Font.BOLD, 40));
             g2.drawString("I Cast Jump", screenWidth / 2 - 120, screenHeight / 2 - 100);
             g2.setFont(new Font("Arial", Font.PLAIN, 30));
             g2.drawString("Play", screenWidth / 2 - 90, screenHeight / 2);
-            g2.drawString("Quit", screenWidth / 2 - 90, screenHeight / 2 + 50);
-            if (commandNum == 0) {
-                g2.drawString(">", screenWidth / 2 - 120, screenHeight / 2);
-            } else if (commandNum == 1) {
-                g2.drawString(">", screenWidth / 2 - 120, screenHeight / 2 + 50);
-            }
+            g2.drawString("Options", screenWidth / 2 - 90, screenHeight / 2 + 50);
+            g2.drawString("Quit", screenWidth / 2 - 90, screenHeight / 2 + 100);
+            g2.drawString(">", screenWidth / 2 - 120, screenHeight / 2 + (50 * commandNum));
             break;
         case PLAY_STATE:
             g2.setColor(Color.white);
@@ -256,10 +253,13 @@ public class GamePanel extends JPanel implements Runnable {
                 Spell spell = activeSpells.get(i);
                 spell.draw(g2);
             }
+
+            // Health Bar
             g2.setColor(Color.DARK_GRAY);
             g2.fillRect(playerX - playerWidth, playerY - 20, maxHealth, 10);
             g2.setColor(Color.RED);
             g2.fillRect(playerX - playerWidth, playerY - 20, currentHealth, 10);
+
             break;
         }
     }
