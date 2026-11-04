@@ -256,6 +256,10 @@ public class GamePanel extends JPanel implements Runnable {
                 Spell spell = activeSpells.get(i);
                 spell.draw(g2);
             }
+            g2.setColor(Color.DARK_GRAY);
+            g2.fillRect(playerX - playerWidth, playerY - 20, maxHealth, 10);
+            g2.setColor(Color.RED);
+            g2.fillRect(playerX - playerWidth, playerY - 20, currentHealth, 10);
             break;
         }
     }
