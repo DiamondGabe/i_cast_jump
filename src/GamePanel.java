@@ -32,6 +32,7 @@ public class GamePanel extends JPanel implements Runnable {
     public int currentHealth = maxHealth;
     private double velocityY = 0;
     private double gravity = 0.4;
+    public int spellCooldown = 0;
     ArrayList<Platform> activePlatforms = new ArrayList<>();
     ArrayList<Spell> activeSpells = new ArrayList<>();
 
@@ -136,9 +137,13 @@ public class GamePanel extends JPanel implements Runnable {
             double angle = Math.atan2(dY, dX);
 
             // Spell on click
-            if (mouseHandler.leftMousePressed == true) {
+            if ((mouseHandler.leftMousePressed == true) && (spellCooldown == 0)) {
                 Spell spell = new Spell(playerX + playerWidth / 2, playerY + playerHeight / 2, 0, 0, 10, 10, angle);
                 activeSpells.add(spell);
+                spellCooldown = 20;
+            }
+            if (spellCooldown > 0) {
+                spellCooldown--;
             }
 
             // Spell updates
@@ -147,9 +152,11 @@ public class GamePanel extends JPanel implements Runnable {
                 spell.update();
                 // Remove spell if it goes off-screen
                 if (spell.posX < 0 || spell.posX > screenWidth || spell.posY < 0 || spell.posY > screenHeight) {
+                    activeSpells.get(i).detonate();
                     activeSpells.remove(i);
                 }
                 if (getCollidingPlatform(new Rectangle(spell.posX, spell.posY, 10, 10)) != null) {
+                    activeSpells.get(i).detonate();
                     activeSpells.remove(i);
                 }
             }
@@ -244,17 +251,24 @@ public class GamePanel extends JPanel implements Runnable {
             g2.drawString(">", screenWidth / 2 - 120, screenHeight / 2 + (50 * commandNum));
             break;
         case PLAY_STATE:
+
+            // Draw Player
             g2.setColor(Color.white);
             g2.fillRect(playerX, playerY, playerWidth, playerHeight);
+
+            // Draw Platforms
             for (int i = 0; i < activePlatforms.size(); i++) {
                 activePlatforms.get(i).draw(g2);
             }
+
+            // Draw Spells
             for (int i = activeSpells.size() - 1; i >= 0; i--) {
                 Spell spell = activeSpells.get(i);
                 spell.draw(g2);
+                spell.effects(g);
             }
 
-            // Health Bar
+            // Draw Health Bar
             g2.setColor(Color.DARK_GRAY);
             g2.fillRect(playerX - playerWidth, playerY - 20, maxHealth, 10);
             g2.setColor(Color.RED);
