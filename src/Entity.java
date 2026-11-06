@@ -29,13 +29,13 @@ public class Entity {
 
     public void update() {
         if (facingLeft == false) {
-                this.x += speed;
+            x += speed;
         } 
-        if ((x) == (base.getX() + base.getWidth())) {
+        if ((x+width) == (base.getX() + base.getWidth())) {
             swapDirection();
         }
         if (facingLeft == true) {
-            this.x -= speed;
+            x -= speed;
         } 
         if (x == base.getX()) {
             swapDirection();
@@ -53,6 +53,6 @@ public class Entity {
 
     public void draw(Graphics g) {
         g.setColor(Color.ORANGE);
-        g.fillOval(x, y-height, width, height);
+        g.fillRect(x, y-height, width, height);
     }
 }

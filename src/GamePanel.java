@@ -179,7 +179,7 @@ public class GamePanel extends JPanel implements Runnable {
                 enemy.update();
                 // Remove Enemy if it goes off-screen
                 if (enemy.x < 0 || enemy.x > screenWidth || enemy.y < 0 || enemy.y > screenHeight) {
-                    activeEnemies.remove(i);
+                    activeEnemies.get(i).swapDirection();
                 }
             }
 
