@@ -21,6 +21,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int screenHeight = 600;
     KeyHandler keyHandler = new KeyHandler();
     MouseHandler mouseHandler = new MouseHandler();
+    Sound backgroundMusic = new Sound();
     private int fps = 90;
     private long drawInterval = 1000000000 / fps;
     private int playerX = 100;
@@ -46,6 +47,8 @@ public class GamePanel extends JPanel implements Runnable {
         this.addMouseListener(mouseHandler);
         this.addMouseMotionListener(mouseHandler);
         addPlatforms();
+        backgroundMusic.loadFile("res/I_Cast_Jump_Theme.wav");
+        backgroundMusic.loop();
         //activePlatforms.add(new Platform(200, 450, 100, 20));
         //activePlatforms.add(new Platform(500, 420, 100, 20));
     }
