@@ -9,7 +9,7 @@ public class Entity {
     public int height;
     protected int maxHealth;
     protected int currentHealth;
-    public int damage;
+    public int damage = 2;
     private Rectangle bounds;
     public boolean facingLeft = false;
     public int speed = 2;

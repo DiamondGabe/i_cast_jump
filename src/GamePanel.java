@@ -184,9 +184,11 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
 
-            // Entity Player Collision
+            // Entity/Player Collision
             Entity collidor = getCollidingEntity(playerBounds);
-            currentHealth -= collidor.getDamage();
+            if (collidor != null) {
+                currentHealth -= collidor.damage;
+            }
 
             // X-Axis movement and screen bounds
             boolean isFarLeft = playerX <= 0;
@@ -268,7 +270,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     private Entity getCollidingEntity(Rectangle bounds) {
-        for (int i = activeEnemies.size() - 1; i < 0; i--) {
+        for (int i = activeEnemies.size() - 1; i >= 0; i--) {
             Entity enemy = activeEnemies.get(i);
             if (bounds.intersects(enemy.getBounds())) {
                 return enemy;
