@@ -34,6 +34,7 @@ public class GamePanel extends JPanel implements Runnable {
     private double velocityY = 0;
     private double gravity = 0.4;
     public int spellCooldown = 0;
+    Rectangle playerBounds = new Rectangle(playerX, playerY, playerWidth, playerHeight);
     ArrayList<Platform> activePlatforms = new ArrayList<>();
     ArrayList<Spell> activeSpells = new ArrayList<>();
     ArrayList<Entity> activeEnemies = new ArrayList<>();
@@ -257,6 +258,16 @@ public class GamePanel extends JPanel implements Runnable {
             Platform platform = activePlatforms.get(i);
             if (bounds.intersects(platform.getBounds())) {
                 return platform;
+            }
+        }
+        return null;
+    }
+
+    private Entity getCollidingEntity(Rectangle bounds) {
+        for (int i = activeEnemies.size() - 1; i < 0; i--) {
+            Entity enemy = activeEnemies.get(i);
+            if (bounds.intersects(enemy.getBounds())) {
+                return enemy;
             }
         }
         return null;
