@@ -36,6 +36,7 @@ public class GamePanel extends JPanel implements Runnable {
     public int spellCooldown = 0;
     ArrayList<Platform> activePlatforms = new ArrayList<>();
     ArrayList<Spell> activeSpells = new ArrayList<>();
+    ArrayList<Entity> activeEnemies = new ArrayList<>();
 
 
     public GamePanel() {
@@ -215,6 +216,10 @@ public class GamePanel extends JPanel implements Runnable {
             // Jumping
             if ((keyHandler.upPressed == true || keyHandler.spacePressed == true) && isGrounded) {
                 velocityY = -12;
+                Sound jump_sound = new Sound();
+                jump_sound.loadFile("res/jump.wav");
+                jump_sound.setVolume(150);
+                jump_sound.play();
             }
 
             // Sprint speed

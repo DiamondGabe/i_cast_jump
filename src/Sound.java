@@ -32,8 +32,8 @@ public class Sound {
         if (clip == null) {
             return;
         }
-
-        int clampedPercent = Math.max(0, Math.min(100, percent));
+        
+        int clampedPercent = Math.max(0, Math.min(150, percent));
         if (clip.isControlSupported(BooleanControl.Type.MUTE)) {
             BooleanControl muteControl =
                     (BooleanControl) clip.getControl(BooleanControl.Type.MUTE);
