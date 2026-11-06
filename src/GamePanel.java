@@ -58,8 +58,14 @@ public class GamePanel extends JPanel implements Runnable {
         for (int i = 0; i < screenHeight; i += playerHeight+30) {
                 int platformX = (int) (screenWidth * Math.random());
                 int platformXWidth = (int) (Math.random() * 800);
-                activePlatforms.add(new Platform(platformX, i, platformXWidth, 20));
+                Platform form = new Platform(platformX, i, platformXWidth, 20);
+                activePlatforms.add(form);
+                summonEnemy(platformX, i, form);
             }
+    }
+
+    public void summonEnemy(int x, int y, Platform b) {
+        activeEnemies.add(new Entity(x, y, playerWidth, playerHeight, 20, 10, b));
     }
 
     public void startGameThread() {
@@ -130,6 +136,7 @@ public class GamePanel extends JPanel implements Runnable {
             // Platform regeneration
             if (keyHandler.gPressed == true) {
                 activePlatforms.clear();
+                activeEnemies.clear();
                 addPlatforms();
             }
 
@@ -162,6 +169,17 @@ public class GamePanel extends JPanel implements Runnable {
                 if (getCollidingPlatform(new Rectangle(spell.posX, spell.posY, 10, 10)) != null) {
                     activeSpells.get(i).detonate();
                     activeSpells.remove(i);
+                }
+                // If spell hits an enemy
+            }
+
+            // Enemy updates
+            for (int i = activeEnemies.size() - 1; i >= 0; i--) {
+                Entity enemy = activeEnemies.get(i);
+                enemy.update();
+                // Remove Enemy if it goes off-screen
+                if (enemy.x < 0 || enemy.x > screenWidth || enemy.y < 0 || enemy.y > screenHeight) {
+                    activeEnemies.remove(i);
                 }
             }
 
@@ -275,6 +293,12 @@ public class GamePanel extends JPanel implements Runnable {
                 spell.draw(g2);
                 spell.effects(g);
             }
+
+            // Draw Enemies
+            for (int i = activeEnemies.size() - 1; i >= 0; i--) {
+                activeEnemies.get(i).draw(g2);
+            }
+
 
             // Draw Health Bar
             g2.setColor(Color.DARK_GRAY);

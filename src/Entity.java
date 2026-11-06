@@ -11,26 +11,40 @@ public class Entity {
     protected int currentHealth;
     public int damage;
     private Rectangle bounds;
+    public boolean facingLeft = false;
+    public int speed = 2;
+    public Platform base;
 
-    public Entity(int posX, int posY, int width, int height, int maxHealth, int currentHealth, int damage) {
+    public Entity(int posX, int posY, int width, int height, int maxHealth, int damage, Platform base) {
         this.x = posX;
         this.y = posY;
         this.width = width;
         this.height = height;
         this.maxHealth = maxHealth;
-        this.currentHealth = currentHealth;
+        this.currentHealth = maxHealth;
         this.damage = damage;
+        this.base = base;
         this.bounds = new Rectangle(posX, posY, width, height);
     }
 
-
-    public void move(int x, int y) {
-        this.x += x;
-        this.y += y;
+    public void update() {
+        if (facingLeft == false) {
+                this.x += speed;
+        } 
+        if ((x) == (base.getX() + base.getWidth())) {
+            swapDirection();
+        }
+        if (facingLeft == true) {
+            this.x -= speed;
+        } 
+        if (x == base.getX()) {
+            swapDirection();
+        }
+        
     }
 
-    public void die() {
-        
+    public void swapDirection() {
+        facingLeft = !facingLeft;
     }
 
     public Rectangle getBounds() {
@@ -39,6 +53,6 @@ public class Entity {
 
     public void draw(Graphics g) {
         g.setColor(Color.ORANGE);
-        g.fillRect(x, y, width, height);
+        g.fillOval(x, y-height, width, height);
     }
 }
