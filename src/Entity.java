@@ -30,14 +30,11 @@ public class Entity {
     public void update() {
         if (facingLeft == false) {
             x += speed;
-        } 
-        if ((x+width) == (base.getX() + base.getWidth())) {
+        } else {x -= speed;}
+        if ((x+width) >= (base.getX() + base.getWidth())) {
             swapDirection();
-        }
-        if (facingLeft == true) {
-            x -= speed;
         } 
-        if (x == base.getX()) {
+        if (x <= base.getX()) {
             swapDirection();
         }
         
@@ -49,6 +46,10 @@ public class Entity {
 
     public Rectangle getBounds() {
         return bounds;
+    }
+
+    public int getDamage() {
+        return damage;
     }
 
     public void draw(Graphics g) {

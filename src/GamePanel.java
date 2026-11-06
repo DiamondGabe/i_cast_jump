@@ -184,6 +184,10 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
 
+            // Entity Player Collision
+            Entity collidor = getCollidingEntity(playerBounds);
+            currentHealth -= collidor.getDamage();
+
             // X-Axis movement and screen bounds
             boolean isFarLeft = playerX <= 0;
             boolean isFarRight = playerX >= screenWidth - playerWidth;
