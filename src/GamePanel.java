@@ -318,6 +318,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 
             // Draw Health Bar
+            if (currentHealth < 0) {currentHealth = 0;}
             g2.setColor(Color.DARK_GRAY);
             g2.fillRect(playerX - playerWidth, playerY - 20, maxHealth, 10);
             g2.setColor(Color.RED);
