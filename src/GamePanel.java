@@ -46,18 +46,18 @@ public class GamePanel extends JPanel implements Runnable {
         //activePlatforms.add(new Platform(500, 420, 100, 20));
     }
 
-        public void addPlatforms() {
+    public void addPlatforms() {
         for (int i = 0; i < screenHeight; i += player.height+30) {
-                int platformX = (int) (screenWidth * Math.random());
-                int platformXWidth = (int) (Math.random() * 800);
-                Platform form = new Platform(platformX, i, platformXWidth, 20);
-                activePlatforms.add(form);
-                summonEnemy(platformX, i, form);
-            }
+            int platformX = (int) (screenWidth * Math.random());
+            int platformXWidth = (int) (Math.random() * 800);
+            Platform form = new Platform(platformX, i, platformXWidth, 20);
+            activePlatforms.add(form);
+            summonEnemy(platformX, i, form);
+        }
     }
 
     public void summonEnemy(int x, int y, Platform b) {
-        activeEnemies.add(new Entity(x, y, player.width, player.height, 20, 10, b));
+        activeEnemies.add(new Entity(x, y, player.width, player.height, 20, 5, b));
     }
 
 
@@ -131,6 +131,7 @@ public class GamePanel extends JPanel implements Runnable {
                 activePlatforms.clear();
                 activeEnemies.clear();
                 addPlatforms();
+                player.currentHealth = player.maxHealth;
             }
 
             /*// Mouse tracking
@@ -204,7 +205,7 @@ public class GamePanel extends JPanel implements Runnable {
         for (int i = activeEnemies.size() - 1; i >= 0; i--) {
             Entity enemy = activeEnemies.get(i);
             if (bounds.intersects(enemy.getBounds())) {
-                System.out.println("Enemy Collided at: " + enemy.x + enemy.y);
+                //System.out.println("Enemy Collided at: " + enemy.x + enemy.y);
                 return enemy;
             }
         }
@@ -227,8 +228,6 @@ public class GamePanel extends JPanel implements Runnable {
             break;
         case PLAY_STATE:
 
-            player.draw(g2);
-
             // Draw Platforms
             for (int i = 0; i < activePlatforms.size(); i++) {
                 activePlatforms.get(i).draw(g2);
@@ -246,8 +245,8 @@ public class GamePanel extends JPanel implements Runnable {
                 activeEnemies.get(i).draw(g2);
             }
 
-
-            
+            //  Draw Player
+            player.draw(g2);
 
             break;
         }

@@ -19,6 +19,7 @@ public class Player {
     public double velocityY = 0;
     public double gravity = 0.4;
     public int spellCooldown = 0;
+    public int iFrames = 30;
     public Rectangle bounds = new Rectangle(x, y, width, height);
     private BufferedImage playerSprite;
     private boolean facingLeft;
@@ -46,6 +47,13 @@ public class Player {
         currentHealth = maxHealth;
     }
 
+    public void damage(int dmg) {
+        if (iFrames == 0) {
+            iFrames = 30;
+            currentHealth -= dmg;
+        } else {iFrames -= 1;}
+    }
+
     public void update() {
         // Mouse tracking
         double playerCenterX = x + (width / 2.0);
@@ -67,7 +75,7 @@ public class Player {
         // Entity/Player Collision
         Entity collidor = gp.getCollidingEntity(getBounds());
         if (collidor != null) {
-            currentHealth -= collidor.damage;
+            damage(collidor.damage);
         }
 
         // X-Axis movement and screen bounds
