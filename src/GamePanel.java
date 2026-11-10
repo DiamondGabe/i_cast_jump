@@ -26,9 +26,9 @@ public class GamePanel extends JPanel implements Runnable {
     private long drawInterval = 1000000000 / fps;
     public Player player = new Player(this, keyHandler, mouseHandler);
     ArrayList<Platform> activePlatforms = new ArrayList<>();
-
     ArrayList<Spell> activeSpells = new ArrayList<>();
     ArrayList<Entity> activeEnemies = new ArrayList<>();
+
 
 
     public GamePanel() {
@@ -144,22 +144,22 @@ public class GamePanel extends JPanel implements Runnable {
             if ((mouseHandler.leftMousePressed == true) && (player.spellCooldown == 0)) {
                 Spell spell = new Spell(player.x + player.width / 2, player.y + player.height / 2, 0, 0, 10, 10, angle);
                 activeSpells.add(spell);
-                player.spellCooldown = 20;
-            }
-            if (player.spellCooldown > 0) {
-                player.spellCooldown--;
+                player.spellCooldown = 20; 
+                if (player.spellCooldown > 0) {
+                    player.spellCooldown--;
+                }
             }
 
             // Spell updates
             for (int i = activeSpells.size() - 1; i >= 0; i--) {
-                Spell spell = activeSpells.get(i);
-                spell.update();
+                Spell spell2 = activeSpells.get(i);
+                spell2.update();
                 // Remove spell if it goes off-screen
-                if (spell.posX < 0 || spell.posX > screenWidth || spell.posY < 0 || spell.posY > screenHeight) {
+                if (spell2.posX < 0 || spell2.posX > screenWidth || spell2.posY < 0 || spell2.posY > screenHeight) {
                     activeSpells.get(i).detonate();
                     activeSpells.remove(i);
                 }
-                if (getCollidingPlatform(new Rectangle(spell.posX, spell.posY, 10, 10)) != null) {
+                if (getCollidingPlatform(new Rectangle(spell2.posX, spell2.posY, 10, 10)) != null) {
                     activeSpells.get(i).detonate();
                     activeSpells.remove(i);
                 }
@@ -176,17 +176,17 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
 
-            // Entity/Player Collision
+            /*// Entity/Player Collision
             Entity collidor = getCollidingEntity(player.bounds);
             if (collidor != null) {
                 player.currentHealth -= collidor.damage;
-            }
+            }*/
 
             // Update Player
             player.update();
 
             break;
-        } 
+            }
         
     }
 

@@ -2,6 +2,9 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import Magic.Spell;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.File;
 
 public class Player {
     GamePanel gp;
@@ -17,13 +20,20 @@ public class Player {
     public double gravity = 0.4;
     public int spellCooldown = 0;
     public Rectangle bounds = new Rectangle(x, y, width, height);
+    private BufferedImage playerSprite;
+    private boolean facingLeft;
 
     public Player(GamePanel gp, KeyHandler keyH, MouseHandler mouseH) {
         this.gp = gp;
         this.keyH = keyH;
         this.mouseH = mouseH;
-        
         setDefaultValues();
+        try {
+            playerSprite = ImageIO.read(new File("res/wizard.png"));
+        } catch (Exception e) {
+            System.out.println("Could not load player sprite!");
+            e.printStackTrace();
+        }
     }
 
     public void setDefaultValues() {
@@ -65,9 +75,11 @@ public class Player {
         boolean isFarRight = x >= gp.screenWidth - width;
         if (keyH.leftPressed == true && !isFarLeft) {
             x -= speed;
+            facingLeft = true;
         }
         if (keyH.rightPressed == true && !isFarRight) {
             x += speed;
+            facingLeft = false;
         }
 
         // X-Axis platform collision
@@ -127,8 +139,18 @@ public class Player {
 
     public void draw(Graphics2D g2) {
         // Draw Player
-        g2.setColor(Color.white);
-        g2.fillRect(x, y, width, height);
+        //g2.setColor(Color.white);
+        //g2.fillRect(x, y, width, height);
+        // drawImage(Image img, int x, int y, int width, int height, ImageObserver observer)
+        if (playerSprite != null) {
+            if (facingLeft == true) {
+                g2.drawImage(playerSprite, x, y, width, height, null);
+            } else {g2.drawImage(playerSprite, x+width, y, -width, height, null);}
+        } else {
+            // A fallback just in case the image failed to load, so you aren't invisible
+            g2.setColor(Color.white);
+            g2.fillRect(x, y, width, height);
+        }
 
         // Draw Health Bar
         int healthBarValue = currentHealth;
