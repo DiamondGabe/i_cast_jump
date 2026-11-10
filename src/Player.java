@@ -159,6 +159,7 @@ public class Player {
     }
 
     public Rectangle getBounds() {
-        return new Rectangle(x, y, width, height);
+        bounds = new Rectangle(x, y, width, height);
+        return bounds;
     }
 }
