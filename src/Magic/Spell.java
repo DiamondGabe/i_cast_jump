@@ -39,7 +39,6 @@ public class Spell {
     }
 
     public void detonate() {
-        System.out.println("Detonated");
         detonating = true;
     }
 

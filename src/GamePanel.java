@@ -24,18 +24,9 @@ public class GamePanel extends JPanel implements Runnable {
     Sound backgroundMusic = new Sound();
     private int fps = 90;
     private long drawInterval = 1000000000 / fps;
-    private int playerX = 100;
-    private int playerY = 100;
-    private int playerWidth = 32;
-    private int playerHeight = 64;
-    private int playerSpeed = 4;
-    public int maxHealth = 100;
-    public int currentHealth = maxHealth;
-    private double velocityY = 0;
-    private double gravity = 0.4;
-    public int spellCooldown = 0;
-    Rectangle playerBounds = new Rectangle(playerX, playerY, playerWidth, playerHeight);
+    public Player player = new Player(this, keyHandler, mouseHandler);
     ArrayList<Platform> activePlatforms = new ArrayList<>();
+
     ArrayList<Spell> activeSpells = new ArrayList<>();
     ArrayList<Entity> activeEnemies = new ArrayList<>();
 
@@ -55,8 +46,8 @@ public class GamePanel extends JPanel implements Runnable {
         //activePlatforms.add(new Platform(500, 420, 100, 20));
     }
 
-    public void addPlatforms() {
-        for (int i = 0; i < screenHeight; i += playerHeight+30) {
+        public void addPlatforms() {
+        for (int i = 0; i < screenHeight; i += player.height+30) {
                 int platformX = (int) (screenWidth * Math.random());
                 int platformXWidth = (int) (Math.random() * 800);
                 Platform form = new Platform(platformX, i, platformXWidth, 20);
@@ -66,8 +57,9 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void summonEnemy(int x, int y, Platform b) {
-        activeEnemies.add(new Entity(x, y, playerWidth, playerHeight, 20, 10, b));
+        activeEnemies.add(new Entity(x, y, player.width, player.height, 20, 10, b));
     }
+
 
     public void startGameThread() {
         gameThread = new Thread(this);
@@ -142,20 +134,20 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             // Mouse tracking
-            double playerCenterX = playerX + (playerWidth / 2.0);
-            double playerCenterY = playerY + (playerHeight / 2.0);
+            double playerCenterX = player.x + (player.width / 2.0);
+            double playerCenterY = player.y + (player.height / 2.0);
             double dX = mouseHandler.mouseX - playerCenterX;
             double dY = mouseHandler.mouseY - playerCenterY;
             double angle = Math.atan2(dY, dX);
 
             // Spell on click
-            if ((mouseHandler.leftMousePressed == true) && (spellCooldown == 0)) {
-                Spell spell = new Spell(playerX + playerWidth / 2, playerY + playerHeight / 2, 0, 0, 10, 10, angle);
+            if ((mouseHandler.leftMousePressed == true) && (player.spellCooldown == 0)) {
+                Spell spell = new Spell(player.x + player.width / 2, player.y + player.height / 2, 0, 0, 10, 10, angle);
                 activeSpells.add(spell);
-                spellCooldown = 20;
+                player.spellCooldown = 20;
             }
-            if (spellCooldown > 0) {
-                spellCooldown--;
+            if (player.spellCooldown > 0) {
+                player.spellCooldown--;
             }
 
             // Spell updates
@@ -185,81 +177,20 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
             // Entity/Player Collision
-            Entity collidor = getCollidingEntity(playerBounds);
+            Entity collidor = getCollidingEntity(player.bounds);
             if (collidor != null) {
-                currentHealth -= collidor.damage;
+                player.currentHealth -= collidor.damage;
             }
 
-            // X-Axis movement and screen bounds
-            boolean isFarLeft = playerX <= 0;
-            boolean isFarRight = playerX >= screenWidth - playerWidth;
-            if (keyHandler.leftPressed == true && !isFarLeft) {
-                playerX -= playerSpeed;
-            }
-            if (keyHandler.rightPressed == true && !isFarRight) {
-                playerX += playerSpeed;
-            }
-
-            // X-Axis platform collision
-            Platform xHit = getCollidingPlatform(getPlayerBounds());
-            if (xHit != null) {
-                if (keyHandler.leftPressed == true) {
-                    playerX = xHit.getX() + xHit.getWidth(); // hit left, snap to the right
-                }
-                if (keyHandler.rightPressed == true) {
-                    playerX = xHit.getX() - playerWidth; // hit right, snap to the left
-                }
-            }
-
-            // Y-Axis movement
-            velocityY += gravity;
-            playerY += (int) velocityY;
-            boolean isGrounded = false;
-
-            // Y-Axis platform collision
-            Platform yHit = getCollidingPlatform(getPlayerBounds());
-            if (yHit != null) {
-                if (velocityY > 0) { // falling down since y increases downwards (I keep forgetting that)
-                    isGrounded = true;
-                    playerY = yHit.getY() - playerHeight;
-                    velocityY = 0;
-                } else if (velocityY < 0) { // jumping up
-                    playerY = yHit.getY() + yHit.getHeight();
-                    velocityY = 0;
-                }
-            }
-                
-            // Y-Axis screen bounds
-            if (playerY >= screenHeight - playerHeight) {
-                isGrounded = true;
-                playerY = screenHeight - playerHeight;
-                velocityY = 0;
-            } else if (playerY <= 0) {
-                playerY = 0;
-            }
-
-            // Jumping
-            if ((keyHandler.upPressed == true || keyHandler.spacePressed == true) && isGrounded) {
-                velocityY = -12;
-                Sound jump_sound = new Sound();
-                jump_sound.loadFile("res/jump.wav");
-                jump_sound.setVolume(150);
-                jump_sound.play();
-            }
-
-            // Sprint speed
-            if (keyHandler.shiftPressed == true && isGrounded) {
-                playerSpeed = 8;
-            } else {
-                playerSpeed = 4;
-            }
+            // Update Player
+            player.update();
 
             break;
         } 
         
     }
 
-    private Platform getCollidingPlatform(Rectangle bounds) {
+    public Platform getCollidingPlatform(Rectangle bounds) {
         for (int i = 0; i < activePlatforms.size(); i++) {
             Platform platform = activePlatforms.get(i);
             if (bounds.intersects(platform.getBounds())) {
@@ -269,7 +200,7 @@ public class GamePanel extends JPanel implements Runnable {
         return null;
     }
 
-    private Entity getCollidingEntity(Rectangle bounds) {
+    public Entity getCollidingEntity(Rectangle bounds) {
         for (int i = activeEnemies.size() - 1; i >= 0; i--) {
             Entity enemy = activeEnemies.get(i);
             if (bounds.intersects(enemy.getBounds())) {
@@ -295,9 +226,7 @@ public class GamePanel extends JPanel implements Runnable {
             break;
         case PLAY_STATE:
 
-            // Draw Player
-            g2.setColor(Color.white);
-            g2.fillRect(playerX, playerY, playerWidth, playerHeight);
+            player.draw(g2);
 
             // Draw Platforms
             for (int i = 0; i < activePlatforms.size(); i++) {
@@ -317,19 +246,14 @@ public class GamePanel extends JPanel implements Runnable {
             }
 
 
-            // Draw Health Bar
-            if (currentHealth < 0) {currentHealth = 0;}
-            g2.setColor(Color.DARK_GRAY);
-            g2.fillRect(playerX - playerWidth, playerY - 20, maxHealth, 10);
-            g2.setColor(Color.RED);
-            g2.fillRect(playerX - playerWidth, playerY - 20, currentHealth, 10);
+            
 
             break;
         }
     }
 
     public Rectangle getPlayerBounds() {
-        return new Rectangle(playerX, playerY, playerWidth, playerHeight);
+        return player.bounds;
     }
     
 }
