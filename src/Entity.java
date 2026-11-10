@@ -9,7 +9,7 @@ public class Entity {
     public int height;
     protected int maxHealth;
     protected int currentHealth;
-    public int damage = 2;
+    public int damage = 5;
     private Rectangle bounds;
     public boolean facingLeft = false;
     public int speed = 2;
@@ -45,6 +45,7 @@ public class Entity {
     }
 
     public Rectangle getBounds() {
+        bounds = new Rectangle(x, y - height, width, height);
         return bounds;
     }
 

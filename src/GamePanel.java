@@ -133,7 +133,7 @@ public class GamePanel extends JPanel implements Runnable {
                 addPlatforms();
             }
 
-            // Mouse tracking
+            /*// Mouse tracking
             double playerCenterX = player.x + (player.width / 2.0);
             double playerCenterY = player.y + (player.height / 2.0);
             double dX = mouseHandler.mouseX - playerCenterX;
@@ -148,7 +148,7 @@ public class GamePanel extends JPanel implements Runnable {
                 if (player.spellCooldown > 0) {
                     player.spellCooldown--;
                 }
-            }
+            }*/
 
             // Spell updates
             for (int i = activeSpells.size() - 1; i >= 0; i--) {
@@ -204,6 +204,7 @@ public class GamePanel extends JPanel implements Runnable {
         for (int i = activeEnemies.size() - 1; i >= 0; i--) {
             Entity enemy = activeEnemies.get(i);
             if (bounds.intersects(enemy.getBounds())) {
+                System.out.println("Enemy Collided at: " + enemy.x + enemy.y);
                 return enemy;
             }
         }

@@ -139,9 +139,6 @@ public class Player {
 
     public void draw(Graphics2D g2) {
         // Draw Player
-        //g2.setColor(Color.white);
-        //g2.fillRect(x, y, width, height);
-        // drawImage(Image img, int x, int y, int width, int height, ImageObserver observer)
         if (playerSprite != null) {
             if (facingLeft == true) {
                 g2.drawImage(playerSprite, x, y, width, height, null);
