@@ -51,6 +51,10 @@ public class Player {
         if (iFrames == 0) {
             iFrames = 30;
             currentHealth -= dmg;
+            Sound hurt_sound = new Sound();
+            hurt_sound.loadFile("res/ouch.wav");
+            hurt_sound.setVolume(150);
+            hurt_sound.play();
         } else {iFrames -= 1;}
     }
 

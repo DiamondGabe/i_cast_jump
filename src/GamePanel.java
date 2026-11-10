@@ -66,16 +66,6 @@ public class GamePanel extends JPanel implements Runnable {
         gameThread.start();
     }
 
-    /*
-    public void addNotify() {
-        super.addNotify();
-        if (gameThread == null) {
-            gameThread = new Thread(this);
-            gameThread.start();
-        }
-    } 
-    */
-
     public void run() {
         double delta = 0;
         long lastTime = System.nanoTime();
@@ -134,23 +124,6 @@ public class GamePanel extends JPanel implements Runnable {
                 player.currentHealth = player.maxHealth;
             }
 
-            /*// Mouse tracking
-            double playerCenterX = player.x + (player.width / 2.0);
-            double playerCenterY = player.y + (player.height / 2.0);
-            double dX = mouseHandler.mouseX - playerCenterX;
-            double dY = mouseHandler.mouseY - playerCenterY;
-            double angle = Math.atan2(dY, dX);
-
-            // Spell on click
-            if ((mouseHandler.leftMousePressed == true) && (player.spellCooldown == 0)) {
-                Spell spell = new Spell(player.x + player.width / 2, player.y + player.height / 2, 0, 0, 10, 10, angle);
-                activeSpells.add(spell);
-                player.spellCooldown = 20; 
-                if (player.spellCooldown > 0) {
-                    player.spellCooldown--;
-                }
-            }*/
-
             // Spell updates
             for (int i = activeSpells.size() - 1; i >= 0; i--) {
                 Spell spell2 = activeSpells.get(i);
@@ -160,11 +133,23 @@ public class GamePanel extends JPanel implements Runnable {
                     activeSpells.get(i).detonate();
                     activeSpells.remove(i);
                 }
+                // Spell/Platform Collision
                 if (getCollidingPlatform(new Rectangle(spell2.posX, spell2.posY, 10, 10)) != null) {
                     activeSpells.get(i).detonate();
                     activeSpells.remove(i);
                 }
-                // If spell hits an enemy
+                // Spell/Enemy Collision
+                Entity target = getCollidingEntity(new Rectangle(spell2.posX, spell2.posY, 10, 10));
+                if (target != null) {
+                    target.currentHealth -= spell2.damage;
+                    if (target.currentHealth == 0) {
+                        activeEnemies.remove(target);
+                    }
+                    Sound hurt_sound = new Sound();
+                    hurt_sound.loadFile("res/ouch.wav");
+                    hurt_sound.setVolume(150);
+                    hurt_sound.play();
+                }
             }
 
             // Enemy updates
@@ -176,12 +161,6 @@ public class GamePanel extends JPanel implements Runnable {
                     activeEnemies.get(i).swapDirection();
                 }
             }
-
-            /*// Entity/Player Collision
-            Entity collidor = getCollidingEntity(player.bounds);
-            if (collidor != null) {
-                player.currentHealth -= collidor.damage;
-            }*/
 
             // Update Player
             player.update();
