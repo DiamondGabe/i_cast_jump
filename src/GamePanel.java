@@ -15,8 +15,10 @@ public class GamePanel extends JPanel implements Runnable {
     private Thread gameThread;
     public final int TITLE_STATE = 0;
     public final int PLAY_STATE = 1;
+    public final int END_STATE = 2;
     public int gameState = TITLE_STATE;
     public int commandNum = 0;
+    public double score;
     public final int screenWidth = 800;
     public final int screenHeight = 600;
     KeyHandler keyHandler = new KeyHandler();
@@ -47,7 +49,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void addPlatforms() {
-        for (int i = 0; i < screenHeight; i += player.height+30) {
+        for (int i = player.height; i < screenHeight; i += player.height+30) {
             int platformX = (int) (screenWidth * Math.random());
             int platformXWidth = (int) (Math.random() * 800);
             Platform form = new Platform(platformX, i, platformXWidth, 20);
@@ -165,7 +167,40 @@ public class GamePanel extends JPanel implements Runnable {
             // Update Player
             player.update();
 
+            // If all enemies are dead, go to end screen
+            if (activeEnemies.size() == 0) {
+                gameState = END_STATE;
+            }
+
             break;
+
+            case END_STATE:
+                fps = 15;
+                if (keyHandler.upPressed == true) {
+                    commandNum--;
+                    if (commandNum < 0) {
+                        commandNum = 1;
+                    }
+                }
+                if (keyHandler.downPressed == true) {
+                    commandNum++;
+                    if (commandNum > 1) {
+                        commandNum = 0;
+                    }
+                }
+                if (keyHandler.spacePressed == true) {
+                    if (commandNum == 0) {
+                        fps = 90;
+                        activePlatforms.clear();
+                        addPlatforms();
+                        gameState = PLAY_STATE;
+                    } else if (commandNum == 1) {
+                        System.exit(0);
+                    }
+                }
+                
+            break;
+
             }
         
     }
@@ -227,6 +262,16 @@ public class GamePanel extends JPanel implements Runnable {
             //  Draw Player
             player.draw(g2);
 
+            break;
+        case END_STATE:
+            g2.setColor(Color.white);
+            g2.setFont(new Font("Arial", Font.BOLD, 40));
+            g2.drawString("I Cast Jump", screenWidth / 2 - 120, screenHeight / 2 - 100);
+            g2.setFont(new Font("Arial", Font.PLAIN, 30));
+            g2.drawString("Score: " + score, screenWidth / 2 - 90, screenHeight / 2);
+            g2.drawString("Play Again", screenWidth / 2 - 90, screenHeight / 2 + 50);
+            g2.drawString("Quit", screenWidth / 2 - 90, screenHeight / 2 + 100);
+            g2.drawString(">", screenWidth / 2 - 120, screenHeight / 2 + (100 * commandNum));
             break;
         }
     }
